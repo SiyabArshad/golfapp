@@ -45,7 +45,6 @@ export default function App() {
   }
   return (
     <NavigationContainer >
-    {/* <SafeAreaView style={styles.container}> */}
     <Stack.Navigator initialroute="onboard" screenOptions={{headerShown:false}} >
       <Stack.Screen name="onboard" component={Onboard} />
       <Stack.Screen name="login" component={Login} />
@@ -58,7 +57,6 @@ export default function App() {
       <Stack.Screen name='course' component={Course}/>
       <Stack.Screen name='home' component={TabNavigation}/>
     </Stack.Navigator>
-    {/* </SafeAreaView> */}
     </NavigationContainer>
   );
 }
