@@ -24,10 +24,12 @@ const TabNavigation = () => {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: colors.black,
+          display:"flex",
+          alignItems:"center",
+          justifyContent:"center",
           marginHorizontal: RFPercentage(1.5),
           marginBottom: RFPercentage(2),
           borderRadius: RFPercentage(3),
-          paddingVertical:RFPercentage(2),
           shadowColor: '#000000',
           shadowOffset: {
             width: 0,

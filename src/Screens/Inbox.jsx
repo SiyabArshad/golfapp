@@ -20,7 +20,7 @@ export default function Inbox({navigation}) {
     }
   return (
     <View style={styles.mnonb}>
-           <UpgradeAccount show={premiumuser} callshow={callbackpremium}/>
+           <UpgradeAccount navigation={navigation} show={premiumuser} callshow={callbackpremium}/>
     <View style={{display:"flex",flexDirection:"row",justifyContent:"space-between",alignItems:"center",marginTop:rp(5)}}>
        <Text style={{fontSize:rp(5),fontFamily:fonts.Nextrabold}}>Inbox</Text>
     </View>

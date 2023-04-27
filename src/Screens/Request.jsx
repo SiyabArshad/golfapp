@@ -8,7 +8,7 @@ import AntIcon from 'react-native-vector-icons/AntDesign';
 import SearchBox from '../Components/SearchBox';
 import UpgradeAccount from '../Components/UpgradeAccount';
 
-export default function Request() {
+export default function Request({navigation}) {
     const [isload,setisload]=React.useState(false)
     const [search,setsearch]=React.useState("")
     const [premiumuser,setpremiumuser]=React.useState(false)
@@ -20,7 +20,7 @@ export default function Request() {
     }
   return (
     <View style={styles.mnonb}>
-           <UpgradeAccount show={premiumuser} callshow={callbackpremium}/>
+           <UpgradeAccount navigation={navigation} show={premiumuser} callshow={callbackpremium}/>
     <View style={{display:"flex",flexDirection:"row",justifyContent:"space-between",alignItems:"center",marginTop:rp(5)}}>
        <Text style={{fontSize:rp(5),fontFamily:fonts.Nextrabold}}>Requests</Text>
     </View>

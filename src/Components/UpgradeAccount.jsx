@@ -3,7 +3,7 @@ import React from 'react'
 import LottieView from 'lottie-react-native';
 import colors from '../configs/colors';
 import fonts from '../configs/fonts';
-export default function UpgradeAccount({show,callshow}) {
+export default function UpgradeAccount({show,callshow,navigation}) {
      return (
     <Modal transparent visible={!show}>
     <View style={{flex:1,justifyContent:"center",alignItems:"center",backgroundColor:"rgba(0,0,0,0.9)"}}>
@@ -39,7 +39,10 @@ export default function UpgradeAccount({show,callshow}) {
     <Text style={{fontFamily:fonts.Nregular,color:colors.white,fontSize:16}}>Later</Text>
 </Pressable>
 
-<Pressable onPress={callshow} style={{backgroundColor:colors.black,paddingHorizontal:15,paddingVertical:7,display:"flex",justifyContent:"center",alignItems:"center",borderRadius:10}}>
+<Pressable onPress={()=>{
+  callshow()
+  navigation.navigate("premium")
+}} style={{backgroundColor:colors.black,paddingHorizontal:15,paddingVertical:7,display:"flex",justifyContent:"center",alignItems:"center",borderRadius:10}}>
     <Text style={{fontFamily:fonts.Nregular,color:colors.white,fontSize:16}}>Upgrade</Text>
 </Pressable>
      </View>

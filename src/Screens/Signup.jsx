@@ -6,8 +6,17 @@ import colors from '../configs/colors'
 import { RFPercentage as rp, RFValue as rf } from "react-native-responsive-fontsize";
 import IonicIcon from 'react-native-vector-icons/Ionicons';
 import MessageCard from '../Components/MessageCard';
-
+import { useSelector,useDispatch } from 'react-redux';
+import { loginaction } from '../redux/auth/authaction';
+//firebase stuff
+import {createUserWithEmailAndPassword,getAuth,deleteUser,updateProfile,sendEmailVerification,signInWithEmailAndPassword} from "firebase/auth"
+import {doc,setDoc,getFirestore, addDoc,getDoc, serverTimestamp} from "firebase/firestore"
+import app from '../configs/firebase.js';
+//end
 export default function Signup({navigation}) {
+    const db=getFirestore(app)
+    const auth=getAuth(app)
+    const dispatch=useDispatch()
     const[email,setemail]=React.useState("")
     const[password,setpassword]=React.useState("")
     const[name,setname]=React.useState("")
@@ -15,37 +24,33 @@ export default function Signup({navigation}) {
     const [issubmit,setissubmit]=React.useState(false)
     const [Error,setError]=React.useState('')
     const [type,settype]=React.useState(false)
-    const handleform=async()=>{
-        setisload(true)
-        setissubmit(true)
-        try{
-            if(email.length===0&&password.length===0&&name.length===0)
-            {
-            setError("Some Feilds are Missing")
-            setisload(false)
-            settype(false)
-            }
-            if(email.length>10&&password.length>5&&name.length>3){
-
-                setError("Logged in Successfully")
-                setisload(false)
-                settype(true)
-            }
-            else
-            {
-                setError("Invalid Credentials")
-                setisload(false)
-                settype(false)
-           
-            }
+    const handleform = async () => {
+        setisload(true);
+        try {
+          const newuser = await createUserWithEmailAndPassword(auth, email, password);
+          const newdoc = await setDoc(doc(db, "users", newuser.user.uid), {
+            userid: newuser.user.uid,
+            name: name,
+            email: email,
+            profilepic:"",
+            premium:false,
+            active:true,
+            desc:""
+          });
+          dispatch(loginaction(newdoc))     
+          setError("Registered Successfully");
+          settype(true);
+        } catch (error) {
+            c
+          setError("Registration Failed");
+          settype(false);
         }
-        catch{
-            setError("Try again later")
-            setisload(false)
-            settype(false)
-           
-        }
-    }
+       finally{
+        setissubmit(true);
+        setisload(false);
+       }
+      };
+      
     const callbacksubmit=()=>{
         setissubmit(false)
     }

@@ -36,7 +36,7 @@ export default function Chat({navigation}) {
 
   return (
     <View style={styles.mnonb}>
-      <UpgradeAccount show={premiumuser} callshow={callbackpremium}/>
+      <UpgradeAccount navigation={navigation} show={premiumuser} callshow={callbackpremium}/>
 <View style={{display:"flex",flexDirection:"row",justifyContent:"space-between",alignItems:"center",marginTop:rp(5),marginHorizontal:rp(3)}}>
 <View style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
   <Image resizeMode='cover' style={{height:50,width:50,borderRadius:10}} source={require("../../assets/images/user2.jpg")}/>

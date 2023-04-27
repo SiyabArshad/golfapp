@@ -5,6 +5,7 @@ import fonts from "../configs/fonts"
 import colors from '../configs/colors'
 import { RFPercentage as rp, RFValue as rf } from "react-native-responsive-fontsize";
 import IonicIcon from 'react-native-vector-icons/Ionicons';
+import { useSelector,useDispatch } from 'react-redux';
 
 export default function Onboard({navigation}) {
   return (

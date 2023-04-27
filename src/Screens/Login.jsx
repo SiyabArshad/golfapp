@@ -6,43 +6,56 @@ import colors from '../configs/colors'
 import { RFPercentage as rp, RFValue as rf } from "react-native-responsive-fontsize";
 import IonicIcon from 'react-native-vector-icons/Ionicons';
 import MessageCard from '../Components/MessageCard';
-
+import { useSelector,useDispatch } from 'react-redux';
+import { loginaction } from '../redux/auth/authaction';
+//firebase stuff
+import {createUserWithEmailAndPassword,getAuth,deleteUser,updateProfile,sendEmailVerification,signInWithEmailAndPassword} from "firebase/auth"
+import {doc,setDoc,getFirestore, addDoc,getDoc, serverTimestamp} from "firebase/firestore"
+import app from '../configs/firebase.js';
+//end
 export default function Login({navigation}) {
+    const db=getFirestore(app)
+    const auth=getAuth(app)
     const[email,setemail]=React.useState("")
     const[password,setpassword]=React.useState("")
     const [isload,setisload]=React.useState(false)
     const [issubmit,setissubmit]=React.useState(false)
     const [Error,setError]=React.useState('')
     const [type,settype]=React.useState(false)
+    const dispatch=useDispatch()
     const handleform=async()=>{
         setisload(true)
-        setissubmit(true)
         try{
             if(email.length===0&&password.length===0)
             {
             setError("Some Feilds are Missing")
-            setisload(false)
             settype(false)
             }
-            if(email.length>10&&password.length>5){
-
-                setError("Logged in Successfully")
-                setisload(false)
-                settype(true)
+            const userinfo=await signInWithEmailAndPassword(auth,email,password)
+            const myDocRef = doc(db, "users", userinfo.user.uid);
+            const response = await getDoc(myDocRef);
+            if(response.exists())
+            {
+            dispatch(loginaction(response.data()))
+            setError("Logged in Sucessfully")
+            settype(true)   
             }
             else
             {
-                setError("Invalid Credentials")
-                setisload(false)
-                settype(false)
-           
+            setError("Login Failed")
+            settype(false)   
             }
         }
-        catch{
+        catch(e){
+            console.log(e)
             setError("Try again later")
-            setisload(false)
             settype(false)
            
+        }
+        finally{
+            setisload(false)
+            setissubmit(true)
+       
         }
     }
     const callbacksubmit=()=>{
@@ -78,7 +91,10 @@ export default function Login({navigation}) {
      <View style={[{marginBottom:rp(5),zIndex:999},styles.centertext]}>
                 <Pressable 
                 disabled={issubmit} 
-                onPress={()=>navigation.navigate("home")} style={{backgroundColor:colors.black,paddingHorizontal:rp(8),paddingVertical:rp(1),borderRadius:rp(3)}}>
+                onPress={
+                    handleform
+                    //()=>navigation.navigate("home")
+                } style={{backgroundColor:colors.black,paddingHorizontal:rp(8),paddingVertical:rp(1),borderRadius:rp(3)}}>
                    {
                         isload?
                         <ActivityIndicator size={30} color={colors.white}/>

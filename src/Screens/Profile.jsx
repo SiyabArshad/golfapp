@@ -10,9 +10,52 @@ import FIcon from 'react-native-vector-icons/Feather';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import * as Re from "react-native-elements"
 import MessageCard from '../Components/MessageCard';
+import { useSelector,useDispatch } from 'react-redux';
+import { loginaction,logoutaction } from '../redux/auth/authaction';
+//firebase stuff
+import {createUserWithEmailAndPassword,getAuth,deleteUser,updateProfile,sendEmailVerification,signInWithEmailAndPassword,signOut} from "firebase/auth"
+import {doc,setDoc,getFirestore, addDoc,getDoc, serverTimestamp} from "firebase/firestore"
+import app from '../configs/firebase.js';
+import Loading from '../Components/Loading';
+//end
+import * as Sharing from 'expo-sharing';
+import * as WebBrowser from 'expo-web-browser';
 
 export default function Profile({navigation}) {
-  const [isdark,setisdark]=React.useState(false)
+  const db=getFirestore(app)
+  const auth=getAuth(app)
+  const [loading,setloading]=React.useState(false)
+  const dispatch=useDispatch()
+  
+  const logoutfromdevice=async()=>{
+    setloading(true)
+    try{
+      await signOut(auth)
+      dispatch(logoutaction())
+    }
+    catch(e){
+      console.log(e)
+    }
+    finally{
+      setloading(false)
+    }
+  }
+  const shareoption=async()=>{
+    // try {
+    //   await Sharing.shareAsync('https://google.com');
+    // } catch (error) {
+    //   console.log('Error sharing:', error);
+    // }
+    try {
+      await WebBrowser.openBrowserAsync('https://your-app-url.com');
+    } catch (error) {
+      console.log('Error opening browser:', error);
+    }
+  }
+  if(loading)
+  {
+    return <Loading visible={true}/>
+  }
   return (
     <View style={styles.mnonb}>
       <View style={[styles.centertext,{marginTop:rp(4)}]}>
@@ -33,11 +76,11 @@ export default function Profile({navigation}) {
             <EIcon name="info" size={20} color={colors.white} />
               <Text style={{color:colors.white,fontSize:rp(2.3),fontFamily:fonts.Nmedium,marginLeft:rp(2)}}>About us</Text>
             </Pressable>
-            <Pressable style={{backgroundColor:colors.black,paddingHorizontal:rp(2),paddingVertical:rp(1.3),borderRadius:rp(1),marginBottom:rp(1),display:"flex",flexDirection:"row",alignItems:"center"}}>
+            <Pressable onPress={shareoption} style={{backgroundColor:colors.black,paddingHorizontal:rp(2),paddingVertical:rp(1.3),borderRadius:rp(1),marginBottom:rp(1),display:"flex",flexDirection:"row",alignItems:"center"}}>
             <EIcon name="share" size={20} color={colors.white} />
               <Text style={{color:colors.white,fontSize:rp(2.3),fontFamily:fonts.Nmedium,marginLeft:rp(2)}}>Share</Text>
             </Pressable>
-            <Pressable onPress={()=>navigation.navigate("login")} style={{backgroundColor:colors.black,paddingHorizontal:rp(2),paddingVertical:rp(1.3),borderRadius:rp(1),marginBottom:rp(1),display:"flex",flexDirection:"row",alignItems:"center"}}>
+            <Pressable onPress={logoutfromdevice} style={{backgroundColor:colors.black,paddingHorizontal:rp(2),paddingVertical:rp(1.3),borderRadius:rp(1),marginBottom:rp(1),display:"flex",flexDirection:"row",alignItems:"center"}}>
             <MaterialIcon name="logout" size={20} color={colors.white} />
               <Text style={{color:colors.white,fontSize:rp(2.3),fontFamily:fonts.Nmedium,marginLeft:rp(2)}}>Logout</Text>
             </Pressable>
