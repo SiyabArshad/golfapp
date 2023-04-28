@@ -11,16 +11,12 @@ import UpgradeAccount from '../Components/UpgradeAccount';
 export default function Request({navigation}) {
     const [isload,setisload]=React.useState(false)
     const [search,setsearch]=React.useState("")
-    const [premiumuser,setpremiumuser]=React.useState(false)
-    const callbackpremium=()=>{
-      setpremiumuser(true)
-  }
     const callsearch=(state)=>{
         setsearch(state)
     }
   return (
     <View style={styles.mnonb}>
-           <UpgradeAccount navigation={navigation} show={premiumuser} callshow={callbackpremium}/>
+           <UpgradeAccount navigation={navigation}/>
     <View style={{display:"flex",flexDirection:"row",justifyContent:"space-between",alignItems:"center",marginTop:rp(5)}}>
        <Text style={{fontSize:rp(5),fontFamily:fonts.Nextrabold}}>Requests</Text>
     </View>

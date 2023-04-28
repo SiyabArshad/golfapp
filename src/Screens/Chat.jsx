@@ -14,10 +14,6 @@ import { BottomSheet, Button, ListItem } from "react-native-elements"
 import { GiftedChat,Bubble,BubbleProps,InputToolbar,Send,Composer } from 'react-native-gifted-chat';
 import UpgradeAccount from '../Components/UpgradeAccount';
 export default function Chat({navigation}) {
-  const [premiumuser,setpremiumuser]=React.useState(false)
-  const callbackpremium=()=>{
-    setpremiumuser(true)
-}
   const [messages, setMessages] = React.useState([
     {
       _id: 3,
@@ -36,7 +32,7 @@ export default function Chat({navigation}) {
 
   return (
     <View style={styles.mnonb}>
-      <UpgradeAccount navigation={navigation} show={premiumuser} callshow={callbackpremium}/>
+      <UpgradeAccount navigation={navigation}/>
 <View style={{display:"flex",flexDirection:"row",justifyContent:"space-between",alignItems:"center",marginTop:rp(5),marginHorizontal:rp(3)}}>
 <View style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
   <Image resizeMode='cover' style={{height:50,width:50,borderRadius:10}} source={require("../../assets/images/user2.jpg")}/>

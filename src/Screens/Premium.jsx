@@ -1,4 +1,4 @@
-import { View, Text,Modal,TouchableOpacity,Pressable,Image,StyleSheet,ImageBackground,Dimensions,Platform,Linking,ActivityIndicator,TextInput,ScrollView,FlatList } from 'react-native'
+import { View, Text,Modal,TouchableOpacity,Pressable,Image,StyleSheet,ImageBackground,Dimensions,Platform,Linking,ActivityIndicator,TextInput,ScrollView,FlatList, Alert } from 'react-native'
 import React from 'react'
 import LottieView from 'lottie-react-native';
 import fonts from "../configs/fonts"
@@ -62,7 +62,7 @@ export default function Premium({navigation}) {
 
         </Text>
     </View>
-    <Pressable style={[{backgroundColor:colors.black,marginBottom:rp(8),paddingHorizontal:rp(2),paddingVertical:rp(2),borderRadius:rp(3)},styles.centertext]}>
+    <Pressable onPress={()=>Alert.alert("App is Free in next few updates Subscription Feature will be Added.")} style={[{backgroundColor:colors.black,marginBottom:rp(8),paddingHorizontal:rp(2),paddingVertical:rp(2),borderRadius:rp(3)},styles.centertext]}>
         {
             isload?
             <ActivityIndicator size={30} color={colors.white}/>

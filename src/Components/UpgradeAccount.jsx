@@ -3,9 +3,18 @@ import React from 'react'
 import LottieView from 'lottie-react-native';
 import colors from '../configs/colors';
 import fonts from '../configs/fonts';
-export default function UpgradeAccount({show,callshow,navigation}) {
-     return (
-    <Modal transparent visible={!show}>
+import { useIsFocused } from '@react-navigation/native';
+export default function UpgradeAccount({navigation}) {
+  const focus=useIsFocused()
+  const[premium,setpremium]=React.useState(true)
+  React.useEffect(()=>{
+    if(focus)
+    {
+      setpremium(true)
+    }
+  },[focus])
+  return (
+    <Modal transparent visible={premium}>
     <View style={{flex:1,justifyContent:"center",alignItems:"center",backgroundColor:"rgba(0,0,0,0.9)"}}>
         <View style={{
             minHeight:150,
@@ -35,12 +44,12 @@ export default function UpgradeAccount({show,callshow,navigation}) {
      <Text style={{fontSize:18,fontFamily:fonts.Nregular,color:colors.black,marginVertical:10,textAlign:"center"}}>Upgrade Account to Acess more Features</Text>
      <View style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
 
-<Pressable onPress={callshow} style={{backgroundColor:colors.black,paddingHorizontal:30,paddingVertical:7,display:"flex",justifyContent:"center",alignItems:"center",borderRadius:10,marginRight:5}}>
+<Pressable onPress={()=>setpremium(false)} style={{backgroundColor:colors.black,paddingHorizontal:30,paddingVertical:7,display:"flex",justifyContent:"center",alignItems:"center",borderRadius:10,marginRight:5}}>
     <Text style={{fontFamily:fonts.Nregular,color:colors.white,fontSize:16}}>Later</Text>
 </Pressable>
 
 <Pressable onPress={()=>{
-  callshow()
+  setpremium(false)
   navigation.navigate("premium")
 }} style={{backgroundColor:colors.black,paddingHorizontal:15,paddingVertical:7,display:"flex",justifyContent:"center",alignItems:"center",borderRadius:10}}>
     <Text style={{fontFamily:fonts.Nregular,color:colors.white,fontSize:16}}>Upgrade</Text>

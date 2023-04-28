@@ -9,32 +9,75 @@ import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FIcon from 'react-native-vector-icons/Feather';
 import Enrolleduser from '../Components/Enrolleduser';
 import MessageCard from '../Components/MessageCard';
-
+import Loading from "../Components/Loading"
 const hi=Dimensions.get("window").height
 const wi=Dimensions.get("window").width
+import { useSelector,useDispatch } from 'react-redux';
+import { enrollAction,getallenrolledAction,unenrollAction } from '../redux/enrollment/enrollaction';
+import { useIsFocused } from '@react-navigation/native';
 export default function Course({navigation,route}) {
+    const focus=useIsFocused()
+    const dispatch=useDispatch()
+    const userinfo=useSelector(state=>state.authReducer)
+    const enrolledinfo=useSelector(state=>state.enrolledreducer)
     const coursedetails=route.params.coursedata
     const [isload,setisload]=React.useState(false)
+    const [loading,setloading]=React.useState(false)
     const [issubmit,setissubmit]=React.useState(false)
     const [Error,setError]=React.useState('')
     const [type,settype]=React.useState(false)
+    const [enroll,setenroll]=React.useState(false)
+    
     const handleform=async()=>{
         setisload(true)
-        setissubmit(true)
         try{
-            setError("UnEnrolled")
+            dispatch(enrollAction({courseid:coursedetails?.courseid,userid:userinfo?.currentUser?.userid}))
+            .finally(() => {
             setisload(false)
+            setissubmit(true)
+            setenroll(true)
+            });
+            
+            setError("Enrolled")
             settype(true)
         }
         catch{
             setError("Try again later")
-            setisload(false)
+            settype(false)
+           
+        }
+    }
+    const handleform2=async()=>{
+        setisload(true)
+        try{
+            dispatch(unenrollAction({courseid:coursedetails?.courseid,userid:userinfo?.currentUser?.userid}))
+            .finally(() => {
+                setisload(false)
+                setissubmit(true)
+                setenroll(false)
+                });
+            setError("Un Enrolled")
+            settype(true)
+        }
+        catch{
+            setError("Try again later")
             settype(false)
            
         }
     }
     const callbacksubmit=()=>{
         setissubmit(false)
+    }
+    React.useEffect(()=>{
+        if (focus) {
+            setloading(true);
+            dispatch(getallenrolledAction({courseid:coursedetails?.courseid,userid:userinfo?.userid}))
+            .finally(() => setloading(false));
+          }
+    },[focus])
+    if(enrolledinfo?.loading||loading)
+    {
+        return <Loading visible={true}/>
     }
   return (
     <View>
@@ -63,7 +106,7 @@ export default function Course({navigation,route}) {
 
             <View style={styles.centertext}>
                 <EntypoIcon name='users' size={24} color={colors.black}/>
-                <Text style={{marginTop:5,color:colors.black,fontSize:rp(2.2)}}>15 Users</Text>
+                <Text style={{marginTop:5,color:colors.black,fontSize:rp(2.2)}}>{enrolledinfo?.numberofuser} Users</Text>
             </View>
             <View style={styles.centertext}>
                 <FIcon name='activity' size={24} color={colors.black}/>
@@ -74,8 +117,8 @@ export default function Course({navigation,route}) {
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={{display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"space-around",marginVertical:rp(2)}}>
                 {
-                    [1,2,3,4,5,6,6,67,4,7].map((item,i)=>(
-                        <Enrolleduser/>
+                    enrolledinfo?.users?.map((item,i)=>(
+                        <Enrolleduser key={i} data={item}/>
                     ))
                 }
             </View>
@@ -92,17 +135,31 @@ export default function Course({navigation,route}) {
                 }
             </Text>
         </View>
-
-        <Pressable 
+{
+    enrolledinfo?.exist||enroll?
+    <Pressable 
                 disabled={issubmit} 
-                onPress={handleform} style={[{width:"90%",marginHorizontal:"5%",backgroundColor:colors.black,paddingHorizontal:rp(8),paddingVertical:rp(1),borderRadius:rp(3)},styles.centertext]}>
+                onPress={handleform2} style={[{width:"90%",marginHorizontal:"5%",backgroundColor:colors.black,paddingHorizontal:rp(8),paddingVertical:rp(1),borderRadius:rp(3)},styles.centertext]}>
                    {
-                        isload?
+                        enrolledinfo?.loading||isload?
                         <ActivityIndicator size={30} color={colors.white}/>
                         :
                         <Text style={{color:colors.white,fontFamily:fonts.Nbold,fontSize:rp(3),textTransform:"uppercase"}}>Enrolled</Text>
                     }
-                </Pressable>
+    </Pressable>
+    :   
+     <Pressable 
+    disabled={issubmit} 
+    onPress={handleform} style={[{width:"90%",marginHorizontal:"5%",backgroundColor:colors.black,paddingHorizontal:rp(8),paddingVertical:rp(1),borderRadius:rp(3)},styles.centertext]}>
+       {
+            enrolledinfo?.loading||isload?
+            <ActivityIndicator size={30} color={colors.white}/>
+            :
+            <Text style={{color:colors.white,fontFamily:fonts.Nbold,fontSize:rp(3),textTransform:"uppercase"}}>Enroll</Text>
+        }
+</Pressable>
+
+}
         </ScrollView>
     </View>
   )

@@ -35,9 +35,20 @@ export default function Home({navigation}) {
     const list = [
         { name: "Massachusetts" },
       ]
+      
       React.useEffect(()=>{
-        dispatch(getcourses())
+        if(focus)
+        {
+          dispatch(getcourses())
+          setcourses(coursesdata?.courses)
+        }
+
       },[focus])
+      React.useEffect(() => {
+        if (coursesdata?.courses) {
+          setcourses(coursesdata.courses);
+        }
+      }, [coursesdata]);
   if(coursesdata?.loading)
     {
         return<Loading visible={true}/>

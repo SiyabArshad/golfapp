@@ -7,20 +7,17 @@ import { RFPercentage as rp, RFValue as rf } from "react-native-responsive-fonts
 import IonicIcon from 'react-native-vector-icons/Ionicons';
 import SearchBox from '../Components/SearchBox';
 import UpgradeAccount from '../Components/UpgradeAccount';
-
+import { useIsFocused } from '@react-navigation/native';
 export default function Inbox({navigation}) {
+    const focus=useIsFocused()
     const [isload,setisload]=React.useState(false)
     const [search,setsearch]=React.useState("")
-    const [premiumuser,setpremiumuser]=React.useState(false)
-    const callbackpremium=()=>{
-      setpremiumuser(true)
-  }
     const callsearch=(state)=>{
         setsearch(state)
     }
   return (
     <View style={styles.mnonb}>
-           <UpgradeAccount navigation={navigation} show={premiumuser} callshow={callbackpremium}/>
+           <UpgradeAccount navigation={navigation}/>
     <View style={{display:"flex",flexDirection:"row",justifyContent:"space-between",alignItems:"center",marginTop:rp(5)}}>
        <Text style={{fontSize:rp(5),fontFamily:fonts.Nextrabold}}>Inbox</Text>
     </View>

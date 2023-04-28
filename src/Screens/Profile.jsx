@@ -18,8 +18,6 @@ import {doc,setDoc,getFirestore, addDoc,getDoc, serverTimestamp} from "firebase/
 import app from '../configs/firebase.js';
 import Loading from '../Components/Loading';
 //end
-import * as Sharing from 'expo-sharing';
-import * as WebBrowser from 'expo-web-browser';
 import { getProfileinfo } from '../redux/profile/profileaction';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -58,13 +56,16 @@ export default function Profile({navigation}) {
   }
   const shareoption=async()=>{
     try {
-      await WebBrowser.openBrowserAsync('https://your-app-url.com');
+      await Linking.openURL("https://www.privacypolicies.com/live/a9d10653-06f3-412b-8271-6b2f3f91a201");
     } catch (error) {
       console.log('Error opening browser:', error);
     }
   }
   React.useEffect(()=>{
-    getprofilefordevice()
+    if(focus)
+    {
+      getprofilefordevice()
+    }
   },[focus])
   if(loading||profileinfo?.isloading)
   {
@@ -92,7 +93,7 @@ export default function Profile({navigation}) {
             </Pressable>
             <Pressable onPress={shareoption} style={{backgroundColor:colors.black,paddingHorizontal:rp(2),paddingVertical:rp(1.3),borderRadius:rp(1),marginBottom:rp(1),display:"flex",flexDirection:"row",alignItems:"center"}}>
             <EIcon name="share" size={20} color={colors.white} />
-              <Text style={{color:colors.white,fontSize:rp(2.3),fontFamily:fonts.Nmedium,marginLeft:rp(2)}}>Share</Text>
+              <Text style={{color:colors.white,fontSize:rp(2.3),fontFamily:fonts.Nmedium,marginLeft:rp(2)}}>Privacy Policy</Text>
             </Pressable>
             <Pressable onPress={logoutfromdevice} style={{backgroundColor:colors.black,paddingHorizontal:rp(2),paddingVertical:rp(1.3),borderRadius:rp(1),marginBottom:rp(1),display:"flex",flexDirection:"row",alignItems:"center"}}>
             <MaterialIcon name="logout" size={20} color={colors.white} />
