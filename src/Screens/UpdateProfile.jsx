@@ -6,50 +6,114 @@ import colors from '../configs/colors'
 import { RFPercentage as rp, RFValue as rf } from "react-native-responsive-fontsize";
 import IonicIcon from 'react-native-vector-icons/Ionicons';
 import MessageCard from '../Components/MessageCard';
+import {doc,setDoc,getFirestore, addDoc,getDoc, updateDoc,serverTimestamp} from "firebase/firestore"
+import app from '../configs/firebase';
+import { useSelector,useDispatch } from 'react-redux';
+import { getProfileinfo } from '../redux/profile/profileaction';
+import Loading from '../Components/Loading';
+import { ref,getDownloadURL,getStorage, uploadBytes  } from "firebase/storage"
+import * as ImagePicker from 'expo-image-picker';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function UpdateProfile({navigation}) {
+   const focus=useIsFocused()
+    const db=getFirestore(app)
+    const storage=getStorage(app)
+    const dispatch=useDispatch()
+    const profileinfo=useSelector(state=>state?.profilereducer)
     const[email,setemail]=React.useState("")
     const[name,setname]=React.useState("")
     const[desc,setdesc]=React.useState("")
     const [isload,setisload]=React.useState(false)
+    const [loading,setloading]=React.useState(false)
     const [issubmit,setissubmit]=React.useState(false)
     const [Error,setError]=React.useState('')
     const [type,settype]=React.useState(false)
-    const handleform=async()=>{
-        setisload(true)
-        setissubmit(true)
-        try{
-            if(email.length===0&&name.length===0)
-            {
-            setError("Some Feilds are Missing")
-            setisload(false)
-            settype(false)
-            }
-            if(email.length>10&&name.length>5){
-
-                setError("Updated Successfully")
-                setisload(false)
-                settype(true)
-            }
-            else
-            {
-                setError("Invalid Credentials")
-                setisload(false)
-                settype(false)
-           
-            }
+    const [image, setImage] = React.useState(null);
+    const pickImage = async () => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+      
+        if (!result.canceled) {
+          const imageUri = result.uri;
+          setImage(imageUri);
         }
-        catch{
-            setError("Try again later")
-            setisload(false)
-            settype(false)
-           
+      };
+    const updateDocument = async (collectionName, documentId, updatedFields) => {
+        const documentRef = doc(db, collectionName, documentId);
+        try {
+          await updateDoc(documentRef, updatedFields);
+        } catch (e) {
+          console.error("Error updating document: ", e);
         }
-    }
+      };
+    const handleform = async () => {
+      setisload(true);
+      try {
+        const { email, name, desc,userid,profilepic } = profileinfo?.profile || {};
+    
+        let updateData = {
+          email: email.length < 10 ? email : email,
+          name: name.length < 3 ? name : name,
+          desc: desc.length < 3 ? desc : desc,
+        };
+    
+        if (image !== null) {
+          const userId = profileinfo?.profile?.userid;
+          const storageRef = ref(
+            storage,
+            `justgolfprofiles/${userId}profile+image1${new Date().toLocaleString()}`
+          );
+          const img = await fetch(image);
+          const bytes = await img.blob();
+    
+          const snapshot = await uploadBytes(storageRef, bytes);
+          const downloadURL = await getDownloadURL(snapshot.ref);
+    
+          updateData.profilepic = downloadURL ||profilepic;
+        }
+    
+        await updateDocument("users",userid, updateData);
+    
+        setError("Updated Successfully");
+        settype(true);
+      } catch (error) {
+        console.error(error);
+        setError("Updated Failed");
+        settype(false);
+      } finally {
+        setisload(false);
+        setissubmit(true);
+      }
+    };
+    
     const callbacksubmit=()=>{
         setissubmit(false)
     }
-
+    const getprofilefordevice=async()=>{
+        setloading(true)
+        try{
+          dispatch(getProfileinfo(profileinfo?.profile?.userid))
+        }
+        catch(e){
+          console.log(e)
+        }
+        finally{
+          setloading(false)
+        }
+      }
+      
+      React.useEffect(()=>{
+        getprofilefordevice()
+      },[focus])
+if(loading||profileinfo?.isloading)
+{
+    return <Loading visible={loading}/>
+}
   return (
     <View style={styles.mnonb}>
          <MessageCard type={type} message={Error} show={issubmit} callshow={callbacksubmit}/>
@@ -63,8 +127,8 @@ export default function UpdateProfile({navigation}) {
     </View>
     <ScrollView showsVerticalScrollIndicator={false}>    
     <View style={{height:200,width:"100%",display:"flex",justifyContent:"center",alignItems:"center"}}>
-        <Pressable style={{display:"flex",justifyContent:"center",alignItems:"center",backgroundColor:colors.black,paddingHorizontal:rp(2),paddingVertical:rp(1),width:150,height:150,borderRadius:75}}>
-            <Image resizeMode='cover' style={{width:150,height:150,borderRadius:75}} source={require("../../assets/images/user2.jpg")}/>
+        <Pressable onPress={pickImage} style={{display:"flex",justifyContent:"center",alignItems:"center",backgroundColor:colors.black,paddingHorizontal:rp(2),paddingVertical:rp(1),width:150,height:150,borderRadius:75}}>
+            <Image resizeMode='cover' style={{width:150,height:150,borderRadius:75}} source={image===null?require("../../assets/images/user2.jpg"):{uri:image}}/>
         </Pressable>
     </View>
     <View style={{marginVertical:rp(3)}}>
@@ -86,7 +150,7 @@ export default function UpdateProfile({navigation}) {
      </View>
      </View>
     </View>
-    <Pressable disabled={issubmit} onPress={handleform} style={[{backgroundColor:colors.black,marginBottom:rp(8),paddingHorizontal:rp(2),paddingVertical:rp(2),borderRadius:rp(3)},styles.centertext]}>
+    <Pressable disabled={issubmit||email.length===0&&name.length===0&&desc.length===0&&image===null} onPress={handleform} style={[{backgroundColor:colors.black,marginBottom:rp(8),paddingHorizontal:rp(2),paddingVertical:rp(2),borderRadius:rp(3)},styles.centertext]}>
         {
             isload?
             <ActivityIndicator size={30} color={colors.white}/>

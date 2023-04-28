@@ -20,13 +20,17 @@ import Loading from '../Components/Loading';
 //end
 import * as Sharing from 'expo-sharing';
 import * as WebBrowser from 'expo-web-browser';
+import { getProfileinfo } from '../redux/profile/profileaction';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function Profile({navigation}) {
+  const focus=useIsFocused()
   const db=getFirestore(app)
   const auth=getAuth(app)
   const [loading,setloading]=React.useState(false)
   const dispatch=useDispatch()
-  
+  const userinfo=useSelector(state=>state?.authReducer)
+  const profileinfo=useSelector(state=>state?. profilereducer)
   const logoutfromdevice=async()=>{
     setloading(true)
     try{
@@ -40,28 +44,38 @@ export default function Profile({navigation}) {
       setloading(false)
     }
   }
+  const getprofilefordevice=async()=>{
+    setloading(true)
+    try{
+      dispatch(getProfileinfo(userinfo?.currentUser?.userid))
+    }
+    catch(e){
+      console.log(e)
+    }
+    finally{
+      setloading(false)
+    }
+  }
   const shareoption=async()=>{
-    // try {
-    //   await Sharing.shareAsync('https://google.com');
-    // } catch (error) {
-    //   console.log('Error sharing:', error);
-    // }
     try {
       await WebBrowser.openBrowserAsync('https://your-app-url.com');
     } catch (error) {
       console.log('Error opening browser:', error);
     }
   }
-  if(loading)
+  React.useEffect(()=>{
+    getprofilefordevice()
+  },[focus])
+  if(loading||profileinfo?.isloading)
   {
     return <Loading visible={true}/>
   }
   return (
     <View style={styles.mnonb}>
       <View style={[styles.centertext,{marginTop:rp(4)}]}>
-        <Image style={{height:80,width:80,borderRadius:40}} resizeMode='cover' source={require("../../assets/images/user2.jpg")}/>
-          <Text style={{color:colors.black,fontFamily:fonts.Nextrabold,fontSize:rp(3),marginTop:rp(1)}}>Ahmed Ppik</Text>
-          <Text style={{color:colors.black,fontFamily:fonts.Nregular}}>ahmedppik99@gmail.com</Text>
+        <Image style={{height:80,width:80,borderRadius:40}} resizeMode='cover' source={profileinfo?.profile?.profilepic===''?require("../../assets/images/user2.jpg"):{uri:profileinfo?.profile?.profilepic}}/>
+          <Text style={{color:colors.black,fontFamily:fonts.Nextrabold,fontSize:rp(3),marginTop:rp(1)}}>{profileinfo?.profile?.name}</Text>
+          <Text style={{color:colors.black,fontFamily:fonts.Nregular}}>{profileinfo?.profile?.email}</Text>
       </View>
       <View style={{marginTop:rp(2)}}>
             <Pressable onPress={()=>navigation.navigate("edit")} style={{backgroundColor:colors.black,paddingHorizontal:rp(2),paddingVertical:rp(1.3),borderRadius:rp(1),marginBottom:rp(1),display:"flex",flexDirection:"row",alignItems:"center"}}>
