@@ -30,7 +30,7 @@ export default function Profile({navigation}) {
   const [loading,setloading]=React.useState(false)
   const dispatch=useDispatch()
   const userinfo=useSelector(state=>state?.authReducer)
-  const profileinfo=useSelector(state=>state?. profilereducer)
+  const profileinfo=useSelector(state=>state?.profilereducer)
   const logoutfromdevice=async()=>{
     setloading(true)
     try{

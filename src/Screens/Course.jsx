@@ -43,7 +43,7 @@ export default function Course({navigation,route}) {
       <ImageBackground
       resizeMode='cover'
       style={{height:hi/2,width:"100%",display:"flex",flexDirection:"column",justifyContent:"space-between",overflow:"hidden"}} 
-      source={coursedetails?.picture}
+      source={{uri:coursedetails?.picture}}
       >
         <View style={{display:"flex",flexDirection:"row",marginTop:rp(4),marginLeft:rp(2)}}>
         <TouchableOpacity onPress={()=>navigation.pop()}>
@@ -58,7 +58,7 @@ export default function Course({navigation,route}) {
         <View style={{display:"flex",flexDirection:"row",justifyContent:"space-around",alignItems:"center",marginVertical:rp(2)}}>
             <View style={styles.centertext}>
                 <IonicIcon name='location' size={24} color={colors.black}/>
-                <Text style={{marginTop:5,color:colors.black,fontSize:rp(2.2)}}>NewYork</Text>
+                <Text style={{marginTop:5,color:colors.black,fontSize:rp(2.2)}}>{coursedetails?.location}</Text>
             </View>
 
             <View style={styles.centertext}>
@@ -88,7 +88,7 @@ export default function Course({navigation,route}) {
             </Text>
             <Text style={{color:colors.black,fontFamily:fonts.Nregular,textAlign:"justify"}}>
                 {
-                    `${coursedetails?.club} ${coursedetails?.course}`
+                    `${coursedetails?.club} ${coursedetails?.course} ${coursedetails?.desc}`
                 }
             </Text>
         </View>

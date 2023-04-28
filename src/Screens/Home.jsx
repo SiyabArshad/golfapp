@@ -10,27 +10,38 @@ import SearchBox from '../Components/SearchBox';
 import golfCourses from '../configs/golfcourses';
 import Coursecard from '../Components/Coursecard';
 import { BottomSheet, Button, ListItem } from "react-native-elements"
+import { useIsFocused } from '@react-navigation/native';
+import { getcourses } from '../redux/courses/courseactions';
+import { useSelector,useDispatch } from 'react-redux';
+import Loading from '../Components/Loading';
 export default function Home({navigation}) {
+    const focus=useIsFocused()
+    const dispatch=useDispatch()
+    const coursesdata=useSelector(state=>state?.coursereducer)
     const [isload,setisload]=React.useState(false)
-    const [search,setsearch]=React.useState("")
     const [isVisible, setIsVisible] = React.useState(false);
     const [statename,setstatename]=React.useState("All")
+    const [courses,setcourses]=React.useState(coursesdata?.courses||[])
     const callsearch=(state)=>{
-        setsearch(state)
-    }
+        if(state==='')
+        {
+            setcourses(coursesdata?.courses)
+        }
+        else
+        {
+        setcourses(courses?.filter(course => course?.club?.toLowerCase()?.includes(state?.toLowerCase())))
+        }
+      }
     const list = [
-        { name: "Florida" },
-        { name: "California"},
-        { name: "Texas"},
-        { name: "Arizona"},
-        { name: "North Carolina"},
-        { name: "South Carolina"},
-        { name: "Georgia"},
-        { name: "Nevada"},
-        { name: "Hawaii"},
-        { name: "Virginia"}
+        { name: "Massachusetts" },
       ]
-      
+      React.useEffect(()=>{
+        dispatch(getcourses())
+      },[focus])
+  if(coursesdata?.loading)
+    {
+        return<Loading visible={true}/>
+    }
   return (
     <View style={styles.mnonb}>
          <BottomSheet modalProps={{}} isVisible={isVisible}>
@@ -71,7 +82,7 @@ export default function Home({navigation}) {
 <ScrollView showsVerticalScrollIndicator={false}>
 <View style={{display:"flex",flexDirection:"row",justifyContent:"center",flexWrap:"wrap"}}>
 {
-    golfCourses?.map((item,i)=>(
+    courses?.map((item,i)=>(
         <Coursecard navigation={navigation} key={i} detail={item}/>
     ))
 }
