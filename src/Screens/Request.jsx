@@ -18,10 +18,10 @@ export default function Request({navigation}) {
     const dispatch=useDispatch()
     const userinfo=useSelector(state=>state.authReducer)
     const reqdata=useSelector(state=>state?.requestReducers)
-    const acceptFreindRequest=async(id)=>{
+    const acceptFreindRequest=async(id,freindid)=>{
         setisload(true)
         try{
-            dispatch(acceptrequestaction({documentId:id,userid:userinfo?.currentUser?.userid})).finally(()=>setisload(false))
+            dispatch(acceptrequestaction({documentId:id,userid:userinfo?.currentUser?.userid,freindid:freindid})).finally(()=>setisload(false))
         }
         catch{
             setisload(false)
@@ -53,6 +53,9 @@ export default function Request({navigation}) {
     {/* <SearchBox callinp={callsearch}/> */}
     <ScrollView showsVerticalScrollIndicator={false}>
         {
+            reqdata?.requests?.length<=0?<View style={{height:Dimensions.get("screen").height/1.2,justifyContent:"center",alignItems:"center"}}>
+                <Text>No Requests</Text>
+            </View>:
             reqdata?.requests?.map((item,i)=>(
                 <View key={i} style={{display:"flex",flexDirection:"row",justifyContent:"space-between",backgroundColor:colors.black,paddingHorizontal:5,paddingVertical:10,borderRadius:10,marginBottom:rp(1)}}>
             <View style={{display:"flex",flexDirection:"row",alignItems:"center",width:"60%"}}>
@@ -66,7 +69,7 @@ export default function Request({navigation}) {
                 {
                     isload?<ActivityIndicator size={24} color={colors.white}/>:
                     <>
-                <TouchableOpacity onPress={()=>acceptFreindRequest(item?.parentid)}>
+                <TouchableOpacity onPress={()=>acceptFreindRequest(item?.parentid,item?.userid)}>
                 <AntIcon name="like1" size={24} color={colors.green} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={()=>rejectFreindRequest(item?.parentid)} style={{marginLeft:10}}>

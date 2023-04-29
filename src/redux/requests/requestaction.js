@@ -30,8 +30,18 @@ export const getallrequestaction=(payload)=>{
 export const acceptrequestaction=(payload)=>{
     return async(dispatch)=>{
         const documentRef = doc(db,"requests", payload?.documentId);
+        const freindRef=doc(db,"users",payload?.freindid)
+        const ownRef=doc(db,"users",payload?.userid)
         try {
           await updateDoc(documentRef, {status:true});
+          await addDoc(collection(db,"contacts"),{
+            user:ownRef,
+            freind:freindRef            
+          })
+          await addDoc(collection(db,"contacts"),{
+            user:freindRef,
+            freind:ownRef            
+          })
             dispatch(getallrequestaction({userid:payload?.userid}))
         } catch (e) {
           console.error("Error updating document: ", e);

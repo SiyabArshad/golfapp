@@ -21,7 +21,6 @@ export default function UpdateProfile({navigation}) {
     const storage=getStorage(app)
     const dispatch=useDispatch()
     const profileinfo=useSelector(state=>state?.profilereducer)
-    const[emailu,setemail]=React.useState("")
     const[nameu,setname]=React.useState("")
     const[descu,setdesc]=React.useState("")
     const [isload,setisload]=React.useState(false)
@@ -51,15 +50,15 @@ export default function UpdateProfile({navigation}) {
           console.error("Error updating document: ", e);
         }
       };
-    const handleform = async () => {
+       
+      const handleform = async () => {
       setisload(true);
       try {
         const { email, name, desc,userid,profilepic } = profileinfo?.profile || {};
-    
         let updateData = {
-          email: emailu.length < 10 ? email : emailu,
           name: nameu.length < 3 ? name : nameu,
           desc: descu.length < 3 ? desc : descu,
+          profilepic:profileinfo?.profile?.profilepic
         };
     
         if (image !== null) {
@@ -131,12 +130,6 @@ export default function UpdateProfile({navigation}) {
         <Text style={{fontSize:rp(3),color:colors.black,fontFamily:fonts.Nextrabold}}>Profile info</Text>
         <View style={{marginTop:rp(8),marginHorizontal:rp(2)}}>
      <View style={{marginBottom:rp(7)}}>
-        <Text style={styles.lable}>Email</Text>
-        <TextInput 
-        value={emailu} onChangeText={(e)=>setemail(e)}
-        style={{marginTop:rp(1),borderBottomWidth:1,borderBottomColor:colors.black,paddingHorizontal:rp(1.2),paddingVertical:rp(.6),color:colors.black,fontFamily:fonts.Rregular}}/>
-     </View>
-     <View style={{marginBottom:rp(7)}}>
         <Text style={styles.lable}>Username</Text>
         <TextInput value={nameu} onChangeText={(e)=>setname(e)} style={{marginTop:rp(1),borderBottomWidth:1,borderBottomColor:colors.black,paddingHorizontal:rp(1.2),paddingVertical:rp(.6),color:colors.black,fontFamily:fonts.Rregular}}/>
      </View>
@@ -146,7 +139,7 @@ export default function UpdateProfile({navigation}) {
      </View>
      </View>
     </View>
-    <Pressable disabled={issubmit||emailu.length===0&&nameu.length===0&&descu.length===0&&image===null} onPress={handleform} style={[{backgroundColor:colors.black,marginBottom:rp(8),paddingHorizontal:rp(2),paddingVertical:rp(2),borderRadius:rp(3)},styles.centertext]}>
+    <Pressable disabled={issubmit||nameu.length===0&&descu.length===0&&image===null} onPress={handleform} style={[{backgroundColor:colors.black,marginBottom:rp(8),paddingHorizontal:rp(2),paddingVertical:rp(2),borderRadius:rp(3)},styles.centertext]}>
         {
             isload?
             <ActivityIndicator size={30} color={colors.white}/>

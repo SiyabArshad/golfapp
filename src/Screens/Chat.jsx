@@ -13,31 +13,79 @@ import Coursecard from '../Components/Coursecard';
 import { BottomSheet, Button, ListItem } from "react-native-elements"
 import { GiftedChat,Bubble,BubbleProps,InputToolbar,Send,Composer } from 'react-native-gifted-chat';
 import UpgradeAccount from '../Components/UpgradeAccount';
-export default function Chat({navigation}) {
-  const [messages, setMessages] = React.useState([
-    {
-      _id: 3,
-      text: 'I need a ride?',
-      createdAt: new Date(),
-      user: {
-        _id: 4,
-        name: 'Kein',
-        avatar:"https://placeimg.com/140/140/any",
-      },
-    },
-  ]);
-  const onSend = (newMessages = []) => {
-    setMessages(GiftedChat.append(messages, newMessages));
-  };
+import { useSelector } from 'react-redux';
+import {doc,setDoc,getFirestore, addDoc,getDoc, collection,query,orderBy,where,onSnapshot,updateDoc,serverTimestamp} from "firebase/firestore"
+import app from '../configs/firebase';
+export default function Chat({navigation,route}) {
+  const db=getFirestore(app)
+  const freinddatainfo=route?.params?.userdata
+  const userinfo=useSelector(state=>state?.authReducer)
+  const {userid,name,profilepic,email}=userinfo?.currentUser  
+  const [indicator,showindicator]=React.useState(false)
+  const [messages, setMessages] = React.useState([]);
 
+const renderAvatar = (props) => {
+  return (
+    <View>
+      <Image
+        source={freinddatainfo?.profilepic===''?require("../../assets/images/user2.jpg"):{uri:freinddatainfo?.profilepic}}
+        style={{ width: 40, height: 40, borderRadius: 20 }}
+      />
+    </View>
+  );
+};
+  React.useEffect(() => {
+    const docid  =freinddatainfo?.userid > userid ? userid+ "-" + freinddatainfo?.userid : freinddatainfo?.userid+"-"+userid
+    const messageref=collection(db,"chatrooms",docid,"messages")
+    const messagesQuery = query(messageref, orderBy('createdAt',"desc"));  
+    const unsubscribe=onSnapshot(messagesQuery, (snapshot) => {
+    const allmsg=snapshot.docs.map((doc) =>{
+      const data=doc.data()
+      if(data.createdAt){
+          return {
+             ...doc.data(),
+             createdAt:doc.data().createdAt.toDate()
+         }
+      }else {
+         return {
+             ...doc.data(),
+             createdAt:new Date()
+         }
+      }
+  }
+)
+setMessages(allmsg)
+})
+return ()=>{
+  unsubscribe()
+}
+
+
+}, [])
+const onSend =(messageArray) => {
+const msg = messageArray[0]
+const mymsg = {
+    ...msg,
+    sentBy:userid,
+    sentTo:freinddatainfo?.userid,
+    createdAt:new Date()
+}
+setMessages(previousMessages => GiftedChat.append(previousMessages,mymsg))
+const docid  = freinddatainfo?.userid > userid ? userid+ "-" + freinddatainfo?.userid :freinddatainfo?.userid+"-"+userid 
+const messageref=collection(db,"chatrooms",docid,"messages") 
+addDoc(messageref,{...mymsg,createdAt:serverTimestamp()}).then(()=>{
+}).catch(()=>{
+
+})
+}
   return (
     <View style={styles.mnonb}>
       <UpgradeAccount navigation={navigation}/>
 <View style={{display:"flex",flexDirection:"row",justifyContent:"space-between",alignItems:"center",marginTop:rp(5),marginHorizontal:rp(3)}}>
 <View style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
-  <Image resizeMode='cover' style={{height:50,width:50,borderRadius:10}} source={require("../../assets/images/user2.jpg")}/>
+  <Image resizeMode='cover' style={{height:50,width:50,borderRadius:10}} source={freinddatainfo?.profilepic===""?require("../../assets/images/user2.jpg"):{uri:freinddatainfo?.profilepic}}/>
    <View style={{marginLeft:rp(2)}}>
-   <Text style={{fontFamily:fonts.Nbold,color:colors.black,fontSize:rp(2.4)}}>Ahmed PPIK</Text>
+   <Text style={{fontFamily:fonts.Nbold,color:colors.black,fontSize:rp(2.4)}}>{freinddatainfo?.name}</Text>
    <View style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
    <Text style={{fontFamily:fonts.Nregular}}>Active</Text>
    <EntypoIcon name="dot-single" size={24} color={colors.green} />
@@ -50,17 +98,15 @@ export default function Chat({navigation}) {
 </View>
 <GiftedChat
       messages={messages}
-      onSend={onSend}
+      onSend={text => onSend(text)}
+      user={{
+          _id:userid,
+      }}
       renderInputToolbar={renderInputToolbar}
       renderSend={renderSend}
-      user={{
-        _id: 1,
-        name: 'You',
-        avatar: 'https://placeimg.com/140/140/any',
-      }}
       messagesContainerStyle={{backgroundColor:colors.white,paddingBottom:rp(5)}}
       renderBubble={renderBubble}
-
+      renderAvatar={renderAvatar}
     
     />
     </View>
@@ -143,3 +189,4 @@ const styles=StyleSheet.create({
   }
 
 })
+

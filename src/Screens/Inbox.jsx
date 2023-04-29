@@ -8,6 +8,9 @@ import IonicIcon from 'react-native-vector-icons/Ionicons';
 import SearchBox from '../Components/SearchBox';
 import UpgradeAccount from '../Components/UpgradeAccount';
 import { useIsFocused } from '@react-navigation/native';
+import { useSelector,useDispatch } from 'react-redux';
+import Loading from "../Components/Loading"
+import { getallcontactaction } from '../redux/contacts/contactAction';
 export default function Inbox({navigation}) {
     const focus=useIsFocused()
     const [isload,setisload]=React.useState(false)
@@ -15,25 +18,40 @@ export default function Inbox({navigation}) {
     const callsearch=(state)=>{
         setsearch(state)
     }
+    const [loading,setloading]=React.useState(false)
+    const dispatch=useDispatch()
+    const userinfo=useSelector(state=>state.authReducer)
+    const contactsdata=useSelector(state=>state?.contactReducers)
+    React.useEffect(()=>{
+        if(focus)
+        {
+            setloading(true)
+            dispatch(getallcontactaction({userid:userinfo?.currentUser?.userid})).finally(()=>setloading(false))
+        }
+    },[focus])
   return (
     <View style={styles.mnonb}>
+         <Loading visible={contactsdata?.loading||loading}/>
            <UpgradeAccount navigation={navigation}/>
     <View style={{display:"flex",flexDirection:"row",justifyContent:"space-between",alignItems:"center",marginTop:rp(5)}}>
        <Text style={{fontSize:rp(5),fontFamily:fonts.Nextrabold}}>Inbox</Text>
     </View>
     {/* <SearchBox callinp={callsearch}/> */}
     <ScrollView showsVerticalScrollIndicator={false}>
-        {
-            [1,2,3,4,5,6].map((item,i)=>(
-                <TouchableOpacity onPress={()=>navigation.navigate("chat")} key={i} style={{display:"flex",flexDirection:"row",justifyContent:"space-between",backgroundColor:colors.black,paddingHorizontal:5,paddingVertical:10,borderRadius:10,marginBottom:rp(1)}}>
+    {
+            contactsdata?.contacts?.length<=0?<View style={{height:Dimensions.get("screen").height/1.2,justifyContent:"center",alignItems:"center"}}>
+                <Text>No Freind</Text>
+            </View>:
+           contactsdata&&contactsdata?.contacts.map((item,i)=>(
+                <TouchableOpacity onPress={()=>navigation.navigate("chat",{userdata:item})} key={i} style={{display:"flex",flexDirection:"row",justifyContent:"space-between",backgroundColor:colors.black,paddingHorizontal:5,paddingVertical:10,borderRadius:10,marginBottom:rp(1)}}>
             <View style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
-            <Image style={{height:50,width:50,borderRadius:25}} source={require("../../assets/images/user2.jpg")}/>
+            <Image style={{height:50,width:50,borderRadius:25}} source={item?.profilepic===""?require("../../assets/images/user2.jpg"):{uri:item?.profilepic}}/>
             <View style={{marginLeft:rp(2)}}>
-                <Text style={{color:colors.textgrey2,fontSize:rp(2.3),fontFamily:fonts.Nbold}}>Sunny</Text>
-                <Text style={{fontFamily:fonts.Nmedium,color:colors.white}}>Hey man whats up</Text>
+                <Text style={{color:colors.textgrey2,fontSize:rp(2.3),fontFamily:fonts.Nbold}}>{item?.name}</Text>
+                <Text style={{fontFamily:fonts.Nmedium,color:colors.white}}>{item?.desc}</Text>
             </View>
             </View>
-            <Text style={{color:colors.green,marginRight:rp(1),fontFamily:fonts.Nbold}}>4 mins</Text>
+            <Text style={{color:colors.green,marginRight:rp(1),fontFamily:fonts.Nbold}}>Freind</Text>
         </TouchableOpacity>
             ))
         }
