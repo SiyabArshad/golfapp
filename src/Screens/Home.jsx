@@ -49,12 +49,9 @@ export default function Home({navigation}) {
           setcourses(coursesdata.courses);
         }
       }, [coursesdata]);
-  if(coursesdata?.loading)
-    {
-        return<Loading visible={true}/>
-    }
   return (
     <View style={styles.mnonb}>
+     <Loading visible={coursesdata?.loading}/>
          <BottomSheet modalProps={{}} isVisible={isVisible}>
          <ListItem
           containerStyle={styles.containerStyle}

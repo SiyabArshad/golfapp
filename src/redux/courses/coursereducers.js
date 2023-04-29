@@ -10,6 +10,6 @@ export const coursereducer=(state=initialState,action)=>{
         case courseconstants.getCourses:
             return{...state,courses:action.payload,loading:false}     
         default:
-            return state
+            return {...state,loading:false}
     }
 }

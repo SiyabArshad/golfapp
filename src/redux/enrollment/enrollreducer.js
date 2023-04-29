@@ -15,7 +15,7 @@ export const enrolledreducer=(state=initialState,action)=>{
                 ...state,loading:false,exist:action?.payload?.exist,numberofuser:action?.payload?.data?.length,users:action?.payload?.data
             };
         default:
-            return state;
+            return {...state,loading:false};
     }
 }
 

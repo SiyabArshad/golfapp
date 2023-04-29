@@ -67,12 +67,9 @@ export default function Profile({navigation}) {
       getprofilefordevice()
     }
   },[focus])
-  if(loading||profileinfo?.isloading)
-  {
-    return <Loading visible={true}/>
-  }
   return (
     <View style={styles.mnonb}>
+      <Loading visible={loading||profileinfo?.isloading}/>
       <View style={[styles.centertext,{marginTop:rp(4)}]}>
         <Image style={{height:80,width:80,borderRadius:40}} resizeMode='cover' source={profileinfo?.profile?.profilepic===''?require("../../assets/images/user2.jpg"):{uri:profileinfo?.profile?.profilepic}}/>
           <Text style={{color:colors.black,fontFamily:fonts.Nextrabold,fontSize:rp(3),marginTop:rp(1)}}>{profileinfo?.profile?.name}</Text>

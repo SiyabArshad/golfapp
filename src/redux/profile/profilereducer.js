@@ -16,6 +16,6 @@ export const profilereducer=(state=initialState,action)=>{
                 };
             }
         default:
-            return state;
+            return {...state,isloading:false};
     }
 }

@@ -21,9 +21,9 @@ export default function UpdateProfile({navigation}) {
     const storage=getStorage(app)
     const dispatch=useDispatch()
     const profileinfo=useSelector(state=>state?.profilereducer)
-    const[email,setemail]=React.useState("")
-    const[name,setname]=React.useState("")
-    const[desc,setdesc]=React.useState("")
+    const[emailu,setemail]=React.useState("")
+    const[nameu,setname]=React.useState("")
+    const[descu,setdesc]=React.useState("")
     const [isload,setisload]=React.useState(false)
     const [loading,setloading]=React.useState(false)
     const [issubmit,setissubmit]=React.useState(false)
@@ -57,9 +57,9 @@ export default function UpdateProfile({navigation}) {
         const { email, name, desc,userid,profilepic } = profileinfo?.profile || {};
     
         let updateData = {
-          email: email.length < 10 ? email : email,
-          name: name.length < 3 ? name : name,
-          desc: desc.length < 3 ? desc : desc,
+          email: emailu.length < 10 ? email : emailu,
+          name: nameu.length < 3 ? name : nameu,
+          desc: descu.length < 3 ? desc : descu,
         };
     
         if (image !== null) {
@@ -110,14 +110,10 @@ export default function UpdateProfile({navigation}) {
       React.useEffect(()=>{
         getprofilefordevice()
       },[focus])
-if(loading||profileinfo?.isloading)
-{
-    return <Loading visible={loading}/>
-}
   return (
     <View style={styles.mnonb}>
          <MessageCard type={type} message={Error} show={issubmit} callshow={callbacksubmit}/>
-    
+         <Loading visible={loading||profileinfo?.isloading}/>
      <View style={{display:"flex",flexDirection:"row",justifyContent:"space-between",alignItems:"center",marginTop:rp(5)}}>
         <Pressable onPress={()=>navigation.pop()} style={styles.btn}>
         <IonicIcon name="arrow-back" size={24} color={colors.white} />
@@ -137,20 +133,20 @@ if(loading||profileinfo?.isloading)
      <View style={{marginBottom:rp(7)}}>
         <Text style={styles.lable}>Email</Text>
         <TextInput 
-        value={email} onChangeText={(e)=>setemail(e)}
+        value={emailu} onChangeText={(e)=>setemail(e)}
         style={{marginTop:rp(1),borderBottomWidth:1,borderBottomColor:colors.black,paddingHorizontal:rp(1.2),paddingVertical:rp(.6),color:colors.black,fontFamily:fonts.Rregular}}/>
      </View>
      <View style={{marginBottom:rp(7)}}>
         <Text style={styles.lable}>Username</Text>
-        <TextInput value={name} onChangeText={(e)=>setname(e)} style={{marginTop:rp(1),borderBottomWidth:1,borderBottomColor:colors.black,paddingHorizontal:rp(1.2),paddingVertical:rp(.6),color:colors.black,fontFamily:fonts.Rregular}}/>
+        <TextInput value={nameu} onChangeText={(e)=>setname(e)} style={{marginTop:rp(1),borderBottomWidth:1,borderBottomColor:colors.black,paddingHorizontal:rp(1.2),paddingVertical:rp(.6),color:colors.black,fontFamily:fonts.Rregular}}/>
      </View>
      <View style={{marginBottom:rp(7)}}>
         <Text style={styles.lable}>Description</Text>
-        <TextInput value={desc} onChangeText={(e)=>setdesc(e)} style={{marginTop:rp(1),borderBottomWidth:1,borderBottomColor:colors.black,paddingHorizontal:rp(1.2),paddingVertical:rp(.6),color:colors.black,fontFamily:fonts.Rregular}}/>
+        <TextInput value={descu} onChangeText={(e)=>setdesc(e)} style={{marginTop:rp(1),borderBottomWidth:1,borderBottomColor:colors.black,paddingHorizontal:rp(1.2),paddingVertical:rp(.6),color:colors.black,fontFamily:fonts.Rregular}}/>
      </View>
      </View>
     </View>
-    <Pressable disabled={issubmit||email.length===0&&name.length===0&&desc.length===0&&image===null} onPress={handleform} style={[{backgroundColor:colors.black,marginBottom:rp(8),paddingHorizontal:rp(2),paddingVertical:rp(2),borderRadius:rp(3)},styles.centertext]}>
+    <Pressable disabled={issubmit||emailu.length===0&&nameu.length===0&&descu.length===0&&image===null} onPress={handleform} style={[{backgroundColor:colors.black,marginBottom:rp(8),paddingHorizontal:rp(2),paddingVertical:rp(2),borderRadius:rp(3)},styles.centertext]}>
         {
             isload?
             <ActivityIndicator size={30} color={colors.white}/>

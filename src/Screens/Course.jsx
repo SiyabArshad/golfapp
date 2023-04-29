@@ -27,7 +27,9 @@ export default function Course({navigation,route}) {
     const [Error,setError]=React.useState('')
     const [type,settype]=React.useState(false)
     const [enroll,setenroll]=React.useState(false)
-    
+    const sendafreindrequest=()=>{
+
+    }
     const handleform=async()=>{
         setisload(true)
         try{
@@ -76,14 +78,10 @@ export default function Course({navigation,route}) {
             
           }
     },[focus])
-    if(enrolledinfo?.loading||loading)
-    {
-        return <Loading visible={true}/>
-    }
   return (
     <View>
         <MessageCard type={type} message={Error} show={issubmit} callshow={callbacksubmit}/>
-     
+     <Loading visible={enrolledinfo?.loading||loading}/>
       <ImageBackground
       resizeMode='cover'
       style={{height:hi/2,width:"100%",display:"flex",flexDirection:"column",justifyContent:"space-between",overflow:"hidden"}} 
