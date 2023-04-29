@@ -64,18 +64,15 @@ const Routes=()=>{
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const dispatch=useDispatch()
   const userinfo=useSelector(state=>state?.authReducer)
-  //console.log(userinfo)
+  // console.log(userinfo)
   const[loading,setloading]=React.useState(false)
   const gettinguserstate=async()=>{
     setloading(true)
     try{
-      await dispatch(getCurrentuser())      
+      dispatch(getCurrentuser()).finally(()=>setloading(false))      
     }
     catch{
 
-    }
-    finally{
-      setloading(false)
     }
   }
   React.useEffect(() => {

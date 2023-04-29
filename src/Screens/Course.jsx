@@ -71,8 +71,9 @@ export default function Course({navigation,route}) {
     React.useEffect(()=>{
         if (focus) {
             setloading(true);
-            dispatch(getallenrolledAction({courseid:coursedetails?.courseid,userid:userinfo?.userid}))
+            dispatch(getallenrolledAction({courseid:coursedetails?.courseid,userid:userinfo?.currentUser?.userid}))
             .finally(() => setloading(false));
+            
           }
     },[focus])
     if(enrolledinfo?.loading||loading)

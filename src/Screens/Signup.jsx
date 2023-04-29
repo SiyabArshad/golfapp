@@ -36,12 +36,10 @@ export default function Signup({navigation}) {
             premium:false,
             active:true,
             desc:""
-          });
-          dispatch(loginaction(newdoc))     
+          });  
           setError("Registered Successfully");
           settype(true);
         } catch (error) {
-            c
           setError("Registration Failed");
           settype(false);
         }

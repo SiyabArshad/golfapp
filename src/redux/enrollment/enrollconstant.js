@@ -1,3 +1,3 @@
 export const enrollconstant={
-    totalenrollment:"TOTAL_ENROLLMENTS"
+    totalenrollment:"TOTAL_ENROLLMENTS",
 }

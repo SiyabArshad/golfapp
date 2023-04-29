@@ -43,8 +43,9 @@ export const getallenrolledAction=(payload)=>{
             const availableenrolleduser = [];
             for (const doc of querySnapshot.docs) {
                 const documentdata = doc.data();
-                if(documentdata?.userid===payload?.userid)
+                if(documentdata?.user===payload?.userid)
                 {
+                    
                     userenrollflag=true
                 }
                 const userdetail=await getDoc(documentdata?.userref)
@@ -66,19 +67,16 @@ export const getallenrolledAction=(payload)=>{
                 dispatch({
                     type:enrollconstant.totalenrollment,
                     payload:{
-                        data:[],
-                        exist:false
+                        data:[]
                     }
                 })
             }
         }
         catch(e){
-            console.log(e)
             dispatch({
                 type:enrollconstant.totalenrollment,
                 payload:{
-                    data:[],
-                    exist:false
+                    data:[]
                 }
             })
         }
