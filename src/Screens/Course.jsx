@@ -113,6 +113,8 @@ export default function Course({navigation,route}) {
             </View>
 
         </View>
+        {
+             enrolledinfo?.exist||enroll&&
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={{display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"space-around",marginVertical:rp(2)}}>
                 {
@@ -123,6 +125,7 @@ export default function Course({navigation,route}) {
             </View>
           
         </ScrollView>
+}
         <View style={{height:1,width:"90%",marginHorizontal:"5%",backgroundColor:colors.black}}></View>
         <View style={{marginVertical:rp(2),marginHorizontal:rp(2)}}>
             <Text style={{marginBottom:rp(2),color:colors.black,fontSize:rp(2.6),fontFamily:fonts.Nbold}}>
@@ -143,7 +146,7 @@ export default function Course({navigation,route}) {
                         enrolledinfo?.loading||isload?
                         <ActivityIndicator size={30} color={colors.white}/>
                         :
-                        <Text style={{color:colors.white,fontFamily:fonts.Nbold,fontSize:rp(3),textTransform:"uppercase"}}>Enrolled</Text>
+                        <Text style={{color:colors.white,fontFamily:fonts.Nbold,fontSize:rp(3),textTransform:"uppercase"}}>Un Enrolled</Text>
                     }
     </Pressable>
     :   
