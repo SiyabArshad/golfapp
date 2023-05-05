@@ -25,11 +25,12 @@ const Stack = createNativeStackNavigator();
 import { Provider } from 'react-redux';
 import store from './src/redux/store';
 import { useSelector,useDispatch } from 'react-redux';
-import { getCurrentuser } from './src/redux/auth/authaction';
+import { getCurrentuser,setOnlineUser,setOfflineUser } from './src/redux/auth/authaction';
 import colors from './src/configs/colors';
-
+import { AppState } from 'react-native';
 //end
 export default function App() {
+  
   LogBox.ignoreAllLogs()
   const [fontsLoaded, error] = Font.useFonts({
     'Nunito-Black': require('./assets/fonts/Nunito-Black.ttf'),
@@ -62,6 +63,7 @@ export default function App() {
 
 const Routes=()=>{
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [appState, setAppState] = React.useState(AppState.currentState);
   const dispatch=useDispatch()
   const userinfo=useSelector(state=>state?.authReducer)
   const[loading,setloading]=React.useState(false)
@@ -77,7 +79,22 @@ const Routes=()=>{
   React.useEffect(() => {
     gettinguserstate()
   }, []);
+React.useEffect(()=>{
+  const unsubscribe = AppState.addEventListener('change', nextAppState => {
+    if (appState.match(/inactive|background/) && nextAppState === 'active') {
+      setloading(true)
+      dispatch(setOnlineUser({id:userinfo?.currentUser?.userid})).finally(()=>setloading(false))    
+    } else {
+      setloading(true)
+      dispatch(setOfflineUser({id:userinfo?.currentUser?.userid})).finally(()=>setloading(false))    
+    }
+    setAppState(nextAppState);
+  });
 
+  // return () => {
+  //   unsubscribe();
+  // };
+},[appState])
   if(loading)
   {
     return <View style={{flex:1,justifyContent:"center",alignItems:"center"}}><ActivityIndicator size={24} color={colors.green}/></View>

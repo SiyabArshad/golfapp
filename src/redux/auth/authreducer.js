@@ -3,6 +3,7 @@ import { authContants } from "./constant";
 const initialState = {
   currentUser: null,
   isLoggedIn: false,
+  online:true
 };
 
 export const authReducer = (state = initialState, action) => {
@@ -25,6 +26,16 @@ export const authReducer = (state = initialState, action) => {
         currentUser: null,
         isLoggedIn: false,
       };
+    case authContants.online:
+        return {
+          ...state,
+          online:true
+        };
+    case authContants.offline:
+        return {
+            ...state,
+            online:false
+          };
     default:
       return state;
   }

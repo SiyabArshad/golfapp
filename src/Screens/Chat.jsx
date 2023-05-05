@@ -23,7 +23,6 @@ export default function Chat({navigation,route}) {
   const {userid,name,profilepic,email}=userinfo?.currentUser  
   const [indicator,showindicator]=React.useState(false)
   const [messages, setMessages] = React.useState([]);
-
 const renderAvatar = (props) => {
   return (
     <View>
@@ -87,8 +86,8 @@ addDoc(messageref,{...mymsg,createdAt:serverTimestamp()}).then(()=>{
    <View style={{marginLeft:rp(2)}}>
    <Text style={{fontFamily:fonts.Nbold,color:colors.black,fontSize:rp(2.4)}}>{freinddatainfo?.name}</Text>
    <View style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
-   <Text style={{fontFamily:fonts.Nregular}}>Active</Text>
-   <EntypoIcon name="dot-single" size={24} color={colors.green} />
+   <Text style={{fontFamily:fonts.Nregular}}>{freinddatainfo&&freinddatainfo?.online?"Online":"Offline"}</Text>
+   <EntypoIcon name="dot-single" size={24} color={freinddatainfo&&freinddatainfo?.online?colors.green:colors.grey} />
    </View>
    </View>
 </View>

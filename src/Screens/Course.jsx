@@ -27,9 +27,6 @@ export default function Course({navigation,route}) {
     const [Error,setError]=React.useState('')
     const [type,settype]=React.useState(false)
     const [enroll,setenroll]=React.useState(false)
-    const sendafreindrequest=()=>{
-
-    }
     const handleform=async()=>{
         setisload(true)
         try{
@@ -114,7 +111,7 @@ export default function Course({navigation,route}) {
 
         </View>
         {
-             enrolledinfo?.exist||enroll&&
+             enrolledinfo?.exist||enroll?
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={{display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"space-around",marginVertical:rp(2)}}>
                 {
@@ -125,6 +122,7 @@ export default function Course({navigation,route}) {
             </View>
           
         </ScrollView>
+        :null
 }
         <View style={{height:1,width:"90%",marginHorizontal:"5%",backgroundColor:colors.black}}></View>
         <View style={{marginVertical:rp(2),marginHorizontal:rp(2)}}>
