@@ -36,26 +36,29 @@ export default function Login({navigation}) {
             const response = await getDoc(myDocRef);
             if(response.exists())
             {
-            dispatch(loginaction(response.data()))
-            setError("Logged in Sucessfully")
-            settype(true)   
+            dispatch(loginaction(response.data())).finally(()=>{
+                setError("Logged in Sucessfully")
+                settype(true)   
+                setisload(false)
+                setissubmit(true)
+                })
+                return
             }
             else
             {
             setError("Login Failed")
-            settype(false)   
+            settype(false)  
+            setisload(false)
+            setissubmit(true) 
+            return
             }
         }
         catch(e){
             console.log(e)
             setError("Try again later")
             settype(false)
-           
-        }
-        finally{
             setisload(false)
             setissubmit(true)
-       
         }
     }
     const callbacksubmit=()=>{
